@@ -8,6 +8,7 @@ import com.example.d308.database.entity.Excursion;
 
 import java.util.List;
 
+@Dao
 public interface ExcursionDao {
     @Insert
     void insert(Excursion vacation);
