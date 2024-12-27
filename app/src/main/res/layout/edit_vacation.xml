@@ -35,6 +35,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Start Date (MM/dd/yyyy)"
+            android:focusable="false"
+            android:cursorVisible="false"
+            android:clickable="true"
             android:inputType="date" />
 
         <EditText
@@ -42,6 +45,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="End Date (MM/dd/yyyy)"
+            android:focusable="false"
+            android:cursorVisible="false"
+            android:clickable="true"
             android:inputType="date" />
 
         <Button

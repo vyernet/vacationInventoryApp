@@ -23,7 +23,7 @@
             android:textStyle="bold"
             android:paddingBottom="4dp" />
         <EditText
-            android:id="@+id/editTextVacationTitle"
+            android:id="@+id/addTextVacationTitleDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter Title For Vacation"
@@ -37,7 +37,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="4dp" />
         <EditText
-            android:id="@+id/editTextVacationHotel"
+            android:id="@+id/addTextVacationHotelDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter Hotel For Vacation"
@@ -51,10 +51,13 @@
             android:paddingTop="8dp"
             android:paddingBottom="4dp" />
         <EditText
-            android:id="@+id/editTextVacationStartDate"
+            android:id="@+id/addTextVacationStartDateDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter Start Date"
+            android:focusable="false"
+            android:cursorVisible="false"
+            android:clickable="true"
             android:inputType="date" />
         <TextView
             android:layout_width="match_parent"
@@ -65,10 +68,13 @@
             android:paddingTop="8dp"
             android:paddingBottom="4dp" />
         <EditText
-            android:id="@+id/editTextVacationEndDate"
+            android:id="@+id/addTextVacationEndDateDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter End Date"
+            android:focusable="false"
+            android:cursorVisible="false"
+            android:clickable="true"
             android:inputType="date" />
 
         <Button

@@ -6,21 +6,50 @@ import android.os.Bundle;
 import android.widget.Toast;
 import com.example.d308.database.AppDatabase;
 import com.example.d308.database.entity.Vacation;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.app.DatePickerDialog;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class CreateVacationActivity extends AppCompatActivity {
     private EditText editTextTitle, editTextHotel, editTextStartDate, editTextEndDate;
+    private final Calendar calendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.edit_vacation);
+        setContentView(R.layout.add_vacation);
 
-        editTextTitle = findViewById(R.id.editTextVacationTitleDetails);
-        editTextHotel = findViewById(R.id.editTextVacationHotelDetails);
-        editTextStartDate = findViewById(R.id.editTextVacationStartDateDetails);
-        editTextEndDate = findViewById(R.id.editTextVacationEndDateDetails);
+        editTextTitle = findViewById(R.id.addTextVacationTitleDetails);
+        editTextHotel = findViewById(R.id.addTextVacationHotelDetails);
+        editTextStartDate = findViewById(R.id.addTextVacationStartDateDetails);
+        editTextEndDate = findViewById(R.id.addTextVacationEndDateDetails);
 
-        findViewById(R.id.buttonSaveChangesVacation).setOnClickListener(v -> saveVacation());
+        findViewById(R.id.buttonSaveVacation).setOnClickListener(v -> saveVacation());
+
+        editTextStartDate.setOnClickListener(view -> {
+            new DatePickerDialog(CreateVacationActivity.this, (DatePicker datePicker, int year, int month, int dayOfMonth) -> {
+                calendar.set(year, month, dayOfMonth);
+                String formattedDate = new SimpleDateFormat("MM/dd/yyyy", Locale.US).format(calendar.getTime());
+                editTextStartDate.setText(formattedDate);
+            },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
+
+        editTextEndDate.setOnClickListener(view -> {
+            new DatePickerDialog(CreateVacationActivity.this, (DatePicker datePicker, int year, int month, int dayOfMonth) -> {
+                calendar.set(year, month, dayOfMonth);
+                String formattedDate = new SimpleDateFormat("MM/dd/yyyy", Locale.US).format(calendar.getTime());
+                editTextEndDate.setText(formattedDate);
+            },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
     }
 
     private void saveVacation() {
