@@ -36,6 +36,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewVacations.setLayoutManager(new LinearLayoutManager(this));
         loadVacations();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadVacations();
+    }
+
     private void loadVacations() {
         new Thread(() -> {
             List<Vacation> vacations = appDatabase.vacationDao().getAllVacations();
