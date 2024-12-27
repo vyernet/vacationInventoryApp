@@ -1,90 +1,66 @@
 package com.example.d308;
 
-import android.app.DatePickerDialog;
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
+import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.d308.database.AppDatabase;
 
 import com.example.d308.database.entity.Vacation;
 
 public class MainActivity extends AppCompatActivity {
-    private EditText editTextTitle;
-    private EditText editTextHotel;
-    private EditText editTextStartDate;
-    private EditText editTextEndDate;
-    private final Calendar calendar = Calendar.getInstance();
+
+    private RecyclerView recyclerViewVacations;
+    private AppDatabase appDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_vacation);
+        setContentView(R.layout.activity_main);
 
-        editTextTitle = findViewById(R.id.editTextVacationTitle);
-        editTextHotel = findViewById(R.id.editTextVacationHotel);
-        editTextStartDate = findViewById(R.id.editTextVacationStartDate);
-        editTextEndDate = findViewById(R.id.editTextVacationEndDate);
-        Button savedButton = findViewById(R.id.buttonSaveVacation);
-        editTextStartDate.setOnClickListener(v -> showDatePickerDialog(editTextStartDate));
+        recyclerViewVacations = findViewById(R.id.recyclerViewVacations);
+        appDatabase = AppDatabase.getInstance(this);
 
-        // Date picker for End Date
-        editTextEndDate.setOnClickListener(v -> showDatePickerDialog(editTextEndDate));
-
-        savedButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveVacation();
-            }
+        findViewById(R.id.buttonCreateVacation).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CreateVacationActivity.class);
+            startActivity(intent);
         });
+
+        recyclerViewVacations.setLayoutManager(new LinearLayoutManager(this));
+        loadVacations();
+    }
+    private void loadVacations() {
+        new Thread(() -> {
+            List<Vacation> vacations = appDatabase.vacationDao().getAllVacations();
+            runOnUiThread(() -> {
+                VacationAdapter vacationAdapter = new VacationAdapter(vacations, this);
+                recyclerViewVacations.setAdapter(vacationAdapter);
+            });
+        }).start();
     }
 
-    private void showDatePickerDialog(final EditText editText) {
-        new DatePickerDialog(
-                this,
-                (view, year, month, dayOfMonth) -> {
-                    calendar.set(Calendar.YEAR, year);
-                    calendar.set(Calendar.MONTH, month);
-                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
-                    editText.setText(sdf.format(calendar.getTime()));
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        ).show();
-    }
-
-    private void saveVacation() {
-        String title = editTextTitle.getText().toString();
-        String hotel = editTextHotel.getText().toString();
-        String startDate = editTextStartDate.getText().toString();
-        String endDate = editTextEndDate.getText().toString();
-        new InsertTask(AppDatabase.getInstance(this), new Vacation(0, title, hotel, startDate, endDate)).execute();
-    }
-
-    private static class InsertTask extends AsyncTask<Vacation, Void, Void> {
-        private AppDatabase db;
-        private Vacation vacation;
-
-        InsertTask(AppDatabase db, Vacation vacation) {
-            this.db = db;
-            this.vacation = vacation;
-        }
-
-        @Override
-        protected Void doInBackground(Vacation... vacations) {
-            db.vacationDao().insert(vacation);
-            return null;
-        }
+    public void deleteVacation(Vacation vacation) {
+        new AlertDialog.Builder(this)
+                .setTitle("Confirm Deletion")
+                .setMessage("Are you sure you want to delete the vacation?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    new Thread(() -> {
+                        appDatabase.vacationDao().delete(vacation);
+                        runOnUiThread(() -> {
+                            Toast.makeText(this, "Vacation deleted", Toast.LENGTH_SHORT).show();
+                            loadVacations();
+                        });
+                    }).start();
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
    
 }
