@@ -1,5 +1,7 @@
 package com.example.d308;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -20,10 +22,29 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerViewVacations;
     private AppDatabase appDatabase;
 
+    private void createNotificationChannel() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            String channelId = "vacation_notifications";
+            CharSequence channelName = "Vacation Notifications";
+            String channelDescription = "Notifications for vacation alerts.";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+            channel.setDescription(channelDescription);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        createNotificationChannel();
 
         recyclerViewVacations = findViewById(R.id.recyclerViewVacations);
         appDatabase = AppDatabase.getInstance(this);
