@@ -17,11 +17,14 @@ import com.example.d308.database.entity.Vacation;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import com.example.d308.validators.DateFormatValidator;
+import com.example.d308.validators.DateRangeValidator;
 
 public class EditVacationActivity extends AppCompatActivity {
     private EditText editTextTitle, editTextHotel, editTextStartDate, editTextEndDate;
     private int vacationId;
     private AppDatabase appDatabase;
+    private String dateFormat = "MM/dd/yyyy";
 
     private final Calendar calendar = Calendar.getInstance();
 
@@ -94,6 +97,18 @@ public class EditVacationActivity extends AppCompatActivity {
         String hotel = editTextHotel.getText().toString().trim();
         String startDate = editTextStartDate.getText().toString().trim();
         String endDate = editTextEndDate.getText().toString().trim();
+
+        DateFormatValidator formatValidator = new DateFormatValidator(dateFormat);
+        if (!formatValidator.isValid(startDate) || !formatValidator.isValid(endDate)) {
+            Toast.makeText(this, formatValidator.getErrorMessage(), Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        DateRangeValidator rangeValidator = new DateRangeValidator(dateFormat);
+        if (!rangeValidator.isValid(new String[]{startDate, endDate})) {
+            Toast.makeText(this, rangeValidator.getErrorMessage(), Toast.LENGTH_LONG).show();
+            return;
+        }
 
         if (title.isEmpty() || hotel.isEmpty() || startDate.isEmpty() || endDate.isEmpty()) {
             Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();

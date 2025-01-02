@@ -12,10 +12,13 @@ import android.app.DatePickerDialog;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import com.example.d308.validators.DateFormatValidator;
+import com.example.d308.validators.DateRangeValidator;
 
 public class CreateVacationActivity extends AppCompatActivity {
     private EditText editTextTitle, editTextHotel, editTextStartDate, editTextEndDate;
     private final Calendar calendar = Calendar.getInstance();
+    private String dateFormat = "MM/dd/yyyy";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,18 @@ public class CreateVacationActivity extends AppCompatActivity {
         String hotel = editTextHotel.getText().toString();
         String startDate = editTextStartDate.getText().toString();
         String endDate = editTextEndDate.getText().toString();
+
+        DateFormatValidator formatValidator = new DateFormatValidator(dateFormat);
+        if (!formatValidator.isValid(startDate) || !formatValidator.isValid(endDate)) {
+            Toast.makeText(this, formatValidator.getErrorMessage(), Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        DateRangeValidator rangeValidator = new DateRangeValidator(dateFormat);
+        if (!rangeValidator.isValid(new String[]{startDate, endDate})) {
+            Toast.makeText(this, rangeValidator.getErrorMessage(), Toast.LENGTH_LONG).show();
+            return;
+        }
 
         new Thread(() -> {
             AppDatabase.getInstance(this).vacationDao()
