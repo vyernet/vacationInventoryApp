@@ -11,9 +11,13 @@
             android:layout_gravity="center_horizontal"
             android:text="Add Excursion" />
 
+
+        <include
+            layout="@layout/button_nav_bar" />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewExcursions"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="16dp" />
+
 </LinearLayout>

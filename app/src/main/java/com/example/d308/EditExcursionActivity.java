@@ -1,6 +1,7 @@
 package com.example.d308;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,6 +44,15 @@ public class EditExcursionActivity extends AppCompatActivity {
         }
 
         loadExcursionDetails();
+
+
+        findViewById(R.id.buttonBack).setOnClickListener(v -> onBackPressed());
+
+        findViewById(R.id.buttonHome).setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        });
 
         editTextDate.setOnClickListener(v -> {
             new DatePickerDialog(EditExcursionActivity.this, (view, year, month, dayOfMonth) -> {

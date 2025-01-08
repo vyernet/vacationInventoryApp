@@ -2,6 +2,7 @@ package com.example.d308;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -63,6 +64,14 @@ public class EditVacationActivity extends AppCompatActivity {
                     calendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
+
+        findViewById(R.id.buttonBack).setOnClickListener(v -> onBackPressed());
+
+        findViewById(R.id.buttonHome).setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        });
 
         appDatabase = AppDatabase.getInstance(this);
 

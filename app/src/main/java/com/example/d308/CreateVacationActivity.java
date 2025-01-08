@@ -45,6 +45,15 @@ public class CreateVacationActivity extends AppCompatActivity {
 
         findViewById(R.id.buttonSaveVacation).setOnClickListener(v -> saveVacation());
 
+
+
+        findViewById(R.id.buttonBack).setOnClickListener(v -> onBackPressed());
+
+        findViewById(R.id.buttonHome).setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        });
         editTextStartDate.setOnClickListener(view -> {
             new DatePickerDialog(CreateVacationActivity.this, (DatePicker datePicker, int year, int month, int dayOfMonth) -> {
                 calendar.set(year, month, dayOfMonth);

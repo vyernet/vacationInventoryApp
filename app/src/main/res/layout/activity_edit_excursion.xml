@@ -24,4 +24,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Save Changes" />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+        </FrameLayout>
+
+        <include
+            layout="@layout/button_nav_bar" />
+    </LinearLayout>
 </LinearLayout>

@@ -26,4 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Save Excursion" />
+
+
+    <include
+        layout="@layout/button_nav_bar" />
 </LinearLayout>
