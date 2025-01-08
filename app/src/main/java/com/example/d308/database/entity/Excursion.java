@@ -15,6 +15,10 @@ public class Excursion {
     private int vacationId;
     private String date;
 
+    public Excursion() {
+
+    }
+
     public int getId() {
         return id;
     }
@@ -38,5 +42,11 @@ public class Excursion {
     }
     public void setVacationId(int vacationId) {
         this.vacationId = vacationId;
+    }
+
+    public Excursion(int id,String title, String date){
+        this.id = id;
+        this.title = title;
+        this.date = date;
     }
 }
