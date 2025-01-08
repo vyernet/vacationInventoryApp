@@ -45,5 +45,19 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Delete" />
+
+        <Button
+            android:id="@+id/buttonAddExcursion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Excursion"
+            android:layout_marginStart="8dp" />
+
+        <Button
+            android:id="@+id/buttonViewExcursions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Excursions"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
 </LinearLayout>
