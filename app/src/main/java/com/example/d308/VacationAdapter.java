@@ -69,9 +69,15 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
             context.startActivity(intent);
         });
 
-        // Handle View Excursions button
+
         holder.buttonViewExcursions.setOnClickListener(v -> {
             Intent intent = new Intent(context, ExcursionListActivity.class);
+            intent.putExtra("VACATION_ID", vacation.getId());
+            context.startActivity(intent);
+        });
+
+        holder.buttonDetails.setOnClickListener(v -> {
+            Intent intent = new Intent(context, VacationDetailsActivity.class);
             intent.putExtra("VACATION_ID", vacation.getId());
             context.startActivity(intent);
         });
@@ -84,7 +90,7 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
 
     static class VacationViewHolder extends RecyclerView.ViewHolder {
         TextView textViewTitle, textViewHotel;
-        Button buttonEdit, buttonDelete, buttonShare, buttonAddExcursion, buttonViewExcursions;
+        Button buttonEdit, buttonDelete, buttonShare, buttonAddExcursion, buttonViewExcursions, buttonDetails;
 
         public VacationViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -95,6 +101,7 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
             buttonShare = itemView.findViewById(R.id.buttonShareVacation);
             buttonAddExcursion = itemView.findViewById(R.id.buttonAddExcursion);
             buttonViewExcursions = itemView.findViewById(R.id.buttonViewExcursions);
+            buttonDetails = itemView.findViewById(R.id.buttonDetailsVacation);
         }
     }
 }

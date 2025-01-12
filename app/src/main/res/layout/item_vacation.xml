@@ -67,6 +67,13 @@
                 android:layout_weight="1"
                 android:text="View Excursions"/>
 
+        <Button
+            android:id="@+id/buttonDetailsVacation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Detailed View" />
+
 
     </LinearLayout>
 </LinearLayout>
