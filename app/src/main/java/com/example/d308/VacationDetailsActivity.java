@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +21,7 @@ public class VacationDetailsActivity extends AppCompatActivity {
 
     private TextView textViewTitle, textViewHotel, textViewStartDate, textViewEndDate;
     private RecyclerView recyclerViewExcursions;
-    private Button buttonAddExcursion;
+
     private AppDatabase appDatabase;
     private int vacationId;
 
@@ -32,7 +35,6 @@ public class VacationDetailsActivity extends AppCompatActivity {
         textViewStartDate = findViewById(R.id.textViewVacationStartDate);
         textViewEndDate = findViewById(R.id.textViewVacationEndDate);
         recyclerViewExcursions = findViewById(R.id.recyclerViewExcursions);
-        buttonAddExcursion = findViewById(R.id.buttonAddExcursion);
 
         vacationId = getIntent().getIntExtra("VACATION_ID", -1);
         if (vacationId == -1) {
@@ -51,12 +53,6 @@ public class VacationDetailsActivity extends AppCompatActivity {
         findViewById(R.id.buttonHome).setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        });
-
-        buttonAddExcursion.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddExcursionActivity.class);
-            intent.putExtra("VACATION_ID", vacationId);
             startActivity(intent);
         });
     }
@@ -79,6 +75,22 @@ public class VacationDetailsActivity extends AppCompatActivity {
                 }
             });
         }).start();
+    }
+    public void deleteExcursion(Excursion excursion) {
+        new AlertDialog.Builder(this)
+                .setTitle("Confirm Deletion")
+                .setMessage("Are you sure you want to delete this excursion?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    new Thread(() -> {
+                        appDatabase.excursionDao().delete(excursion);
+                        runOnUiThread(() -> {
+                            Toast.makeText(this, "Excursion deleted", Toast.LENGTH_SHORT).show();
+                            loadExcursions();
+                        });
+                    }).start();
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void loadExcursions() {

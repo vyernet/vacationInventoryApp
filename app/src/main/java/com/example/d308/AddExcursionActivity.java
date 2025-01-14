@@ -15,6 +15,7 @@ import com.example.d308.database.entity.Excursion;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import com.example.d308.validators.ExcursionDateValidator;
 
 public class AddExcursionActivity extends AppCompatActivity {
 
@@ -61,6 +62,9 @@ public class AddExcursionActivity extends AppCompatActivity {
         String title = editTextExcursionTitle.getText().toString().trim();
         String date = editTextExcursionDate.getText().toString().trim();
 
+        String vacationStartDate = getIntent().getStringExtra("VACATION_START_DATE");
+        String vacationEndDate = getIntent().getStringExtra("VACATION_END_DATE");
+
         if (title.isEmpty()) {
             Toast.makeText(this, "Please enter a title for the excursion", Toast.LENGTH_SHORT).show();
             return;
@@ -68,6 +72,17 @@ public class AddExcursionActivity extends AppCompatActivity {
 
         if (date.isEmpty()) {
             Toast.makeText(this, "Please select a date for the excursion", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (vacationStartDate == null || vacationEndDate == null) {
+            Toast.makeText(this, "Invalid vacation dates. Please try again.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        ExcursionDateValidator validator = new ExcursionDateValidator("MM/dd/yyyy");
+        if (!validator.isValid(vacationStartDate, vacationEndDate, date)) {
+            Toast.makeText(this, validator.getErrorMessage(), Toast.LENGTH_LONG).show();
             return;
         }
 

@@ -44,9 +44,12 @@ public class Excursion {
         this.vacationId = vacationId;
     }
 
-    public Excursion(int id,String title, String date){
+
+    public Excursion(int id,String title, String date, int vacationId){
         this.id = id;
         this.title = title;
         this.date = date;
+        this.vacationId = vacationId;
     }
+
 }

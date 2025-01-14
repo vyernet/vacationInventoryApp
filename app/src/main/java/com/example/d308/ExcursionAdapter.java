@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.d308.database.entity.Excursion;
+import com.example.d308.database.entity.Vacation;
+import com.example.d308.database.AppDatabase;
 
 import java.util.List;
 
@@ -19,9 +21,12 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
     private final List<Excursion> excursions;
     private final Context context;
 
+    AppDatabase appDatabase;
+
     public ExcursionAdapter(List<Excursion> excursions, Context context) {
         this.excursions = excursions;
         this.context = context;
+        this.appDatabase = AppDatabase.getInstance(context);
     }
 
     @NonNull
@@ -37,15 +42,26 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
         holder.textViewTitle.setText(excursion.getTitle());
         holder.textViewDate.setText(excursion.getDate());
 
-        holder.buttonEdit.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EditExcursionActivity.class);
-            intent.putExtra("EXCURSION_ID", excursion.getId());
-            context.startActivity(intent);
-        });
+        new Thread(() -> {
+            Vacation vacation = appDatabase.excursionDao().getVacationForExcursion(excursion.getId());
+            if (vacation != null) {
+                holder.buttonEdit.setOnClickListener(v -> {
+                    Intent intent = new Intent(context, EditExcursionActivity.class);
+                    intent.putExtra("EXCURSION_ID", excursion.getId());
+                    intent.putExtra("VACATION_ID", excursion.getVacationId());
+                    intent.putExtra("VACATION_START_DATE", vacation.getStartDate());
+                    intent.putExtra("VACATION_END_DATE", vacation.getEndDate());
+
+                    context.startActivity(intent);
+                });
+            }
+        }).start();
 
         holder.buttonDelete.setOnClickListener(v -> {
             if (context instanceof ExcursionListActivity) {
                 ((ExcursionListActivity) context).deleteExcursion(excursion);
+            } else if (context instanceof VacationDetailsActivity) {
+                ((VacationDetailsActivity) context).deleteExcursion(excursion);
             }
         });
     }

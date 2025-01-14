@@ -65,6 +65,8 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
 
         holder.buttonAddExcursion.setOnClickListener(v -> {
             Intent intent = new Intent(context, AddExcursionActivity.class);
+            intent.putExtra("VACATION_START_DATE", vacation.getStartDate());
+            intent.putExtra("VACATION_END_DATE", vacation.getEndDate());
             intent.putExtra("VACATION_ID", vacation.getId());
             context.startActivity(intent);
         });

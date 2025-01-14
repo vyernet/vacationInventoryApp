@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.d308.database.AppDatabase;
 import com.example.d308.database.entity.Excursion;
+import com.example.d308.validators.ExcursionDateValidator;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -36,9 +37,15 @@ public class EditExcursionActivity extends AppCompatActivity {
         appDatabase = AppDatabase.getInstance(this);
 
         excursionId = getIntent().getIntExtra("EXCURSION_ID", -1);
+        int vacationId = getIntent().getIntExtra("VACATION_ID", -1);
 
         if (excursionId == -1) {
             Toast.makeText(this, "Invalid Excursion ID", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        if (excursionId == -1 || vacationId == -1) {
+            Toast.makeText(this, "Invalid Excursion or Vacation ID", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -86,13 +93,29 @@ public class EditExcursionActivity extends AppCompatActivity {
         String title = editTextTitle.getText().toString().trim();
         String date = editTextDate.getText().toString().trim();
 
+        String vacationStartDate = getIntent().getStringExtra("VACATION_START_DATE");
+        String vacationEndDate = getIntent().getStringExtra("VACATION_END_DATE");
+
         if (title.isEmpty() || date.isEmpty()) {
             Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        int vacationId = getIntent().getIntExtra("VACATION_ID", -1);
+
+        if (vacationId == -1) {
+            Toast.makeText(this, "Invalid ID", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ExcursionDateValidator validator = new ExcursionDateValidator("MM/dd/yyyy");
+        if (!validator.isValid(vacationStartDate, vacationEndDate, date)) {
+            Toast.makeText(this, validator.getErrorMessage(), Toast.LENGTH_LONG).show();
+            return;
+        }
+
         new Thread(() -> {
-            Excursion excursion = new Excursion(excursionId, title, date);
+            Excursion excursion = new Excursion(excursionId, title, date, vacationId);
             appDatabase.excursionDao().update(excursion);
 
             runOnUiThread(() -> {

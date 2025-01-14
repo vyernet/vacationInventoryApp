@@ -5,6 +5,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 import androidx.room.Delete;
 import com.example.d308.database.entity.Excursion;
+import com.example.d308.database.entity.Vacation;
 
 import java.util.List;
 
@@ -26,4 +27,8 @@ public interface ExcursionDao {
     List<Excursion> getExcursionsForVacation(int vacationId);
     @Query("SELECT * FROM excursions WHERE id = :id")
     Excursion getExcursionById(int id);
+
+    @Query("SELECT * FROM vacations WHERE id = (SELECT vacationId FROM excursions WHERE id = :excursionId)")
+    Vacation getVacationForExcursion(int excursionId);
+
 }
