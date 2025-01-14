@@ -27,6 +27,7 @@
         <activity android:name=".EditVacationActivity" />
         <activity android:name=".CreateVacationActivity" />
         <receiver android:name=".utils.VacationAlarmReceiver" />
+        <receiver android:name=".utils.ExcursionAlarmReceiver" />
         <activity android:name=".AddExcursionActivity"/>
         <activity android:name=".EditExcursionActivity"/>
         <activity android:name=".ExcursionListActivity"/>

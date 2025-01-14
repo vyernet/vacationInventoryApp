@@ -1,6 +1,9 @@
 package com.example.d308;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -11,11 +14,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.d308.database.AppDatabase;
 import com.example.d308.database.entity.Excursion;
+import com.example.d308.utils.ExcursionAlarmReceiver;
 import com.example.d308.validators.ExcursionDateValidator;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Objects;
 
 public class EditExcursionActivity extends AppCompatActivity {
 
@@ -89,6 +95,23 @@ public class EditExcursionActivity extends AppCompatActivity {
         }).start();
     }
 
+    private void scheduleExcursionAlert(String excursionTitle, long excursionDateMillis) {
+        Intent intent = new Intent(this, ExcursionAlarmReceiver.class);
+        intent.putExtra("EXCURSION_TITLE", excursionTitle);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                (int) excursionDateMillis, // Unique request code
+                intent,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, excursionDateMillis, pendingIntent);
+        }
+    }
+
     private void saveChanges() {
         String title = editTextTitle.getText().toString().trim();
         String date = editTextDate.getText().toString().trim();
@@ -114,6 +137,16 @@ public class EditExcursionActivity extends AppCompatActivity {
             return;
         }
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+        long formattedDate = 0;
+
+        try {
+            formattedDate = Objects.requireNonNull(dateFormat.parse(date)).getTime();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        scheduleExcursionAlert(title, formattedDate);
+
         new Thread(() -> {
             Excursion excursion = new Excursion(excursionId, title, date, vacationId);
             appDatabase.excursionDao().update(excursion);
@@ -123,5 +156,7 @@ public class EditExcursionActivity extends AppCompatActivity {
                 finish();
             });
         }).start();
+
+
     }
 }

@@ -1,6 +1,9 @@
 package com.example.d308;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -12,9 +15,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.d308.database.AppDatabase;
 import com.example.d308.database.entity.Excursion;
 
+import java.net.HttpCookie;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Objects;
+
+import com.example.d308.utils.ExcursionAlarmReceiver;
 import com.example.d308.validators.ExcursionDateValidator;
 
 public class AddExcursionActivity extends AppCompatActivity {
@@ -58,6 +66,23 @@ public class AddExcursionActivity extends AppCompatActivity {
         buttonSaveExcursion.setOnClickListener(v -> saveExcursion());
     }
 
+    private void scheduleExcursionAlert(String excursionTitle, long excursionDateMillis) {
+        Intent intent = new Intent(this, ExcursionAlarmReceiver.class);
+        intent.putExtra("EXCURSION_TITLE", excursionTitle);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                (int) excursionDateMillis, // Unique request code
+                intent,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, excursionDateMillis, pendingIntent);
+        }
+    }
+
     private void saveExcursion() {
         String title = editTextExcursionTitle.getText().toString().trim();
         String date = editTextExcursionDate.getText().toString().trim();
@@ -97,6 +122,16 @@ public class AddExcursionActivity extends AppCompatActivity {
 
             runOnUiThread(() -> {
                 Toast.makeText(this, "Excursion added successfully", Toast.LENGTH_SHORT).show();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+                long formattedDate = 0;
+
+                try {
+                    formattedDate = Objects.requireNonNull(dateFormat.parse(date)).getTime();
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+
+                scheduleExcursionAlert(title, formattedDate);
                 finish();
             });
         }).start();
